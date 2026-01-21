@@ -37,9 +37,9 @@ php bin/phpunit
 - Modération
 
 ## Auteur
-Nom :
-Prénom :
-Groupe :
+Nom : Simaoui
+Prénom : Imed
+Groupe : (solo)
 
 ## Pour le professeur
 Ce dépôt contient le code source complet ainsi que les migrations et la configuration Symfony.
