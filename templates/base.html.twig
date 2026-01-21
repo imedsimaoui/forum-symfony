@@ -32,25 +32,24 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
             <script>
                 window.addEventListener('DOMContentLoaded', () => {
-                    const dialog = document.getElementById('login-dialog');
-                    const openBtn = document.getElementById('login-open');
-                    const closeBtn = document.getElementById('login-close');
-                    if (openBtn && dialog) openBtn.addEventListener('click', () => dialog.showModal());
-                    if (closeBtn && dialog) closeBtn.addEventListener('click', () => dialog.close());
+                    const dialog = document.getElementById('connexion-dialog');
+                    const boutonOuvrir = document.getElementById('connexion-ouvrir');
+                    const boutonFermer = document.getElementById('connexion-fermer');
+                    if (boutonOuvrir && dialog) boutonOuvrir.addEventListener('click', () => dialog.showModal());
+                    if (boutonFermer && dialog) boutonFermer.addEventListener('click', () => dialog.close());
 
-                    const counter = document.getElementById('online-count');
-                    async function refreshOnline() {
-                        if (!counter) return;
+                    const compteur = document.getElementById('compteur-connectes');
+                    async function rafraichirConnectes() {
+                        if (!compteur) return;
                         try {
-                            const res = await fetch('{{ path('app_api_online_count') }}', { headers: { 'Accept': 'application/json' } });
+                            const res = await fetch('{{ path('app_api_compteur_connectes') }}', { headers: { 'Accept': 'application/json' } });
                             const data = await res.json();
-                            counter.textContent = data.count;
+                            compteur.textContent = data.count;
                         } catch (e) {
-                            // ignore
                         }
                     }
-                    refreshOnline();
-                    setInterval(refreshOnline, 15000);
+                    rafraichirConnectes();
+                    setInterval(rafraichirConnectes, 15000);
                 });
             </script>
         {% endblock %}
@@ -58,22 +57,22 @@
     <body>
         <header>
             <div class="container topbar">
-                <div class="brand"><a href="{{ path('app_home') }}">Forum Symfony</a></div>
+                <div class="brand"><a href="{{ path('app_accueil') }}">Forum Symfony</a></div>
                 <div class="nav">
-                    <a class="btn ghost" href="{{ path('app_home') }}">Accueil</a>
+                    <a class="btn ghost" href="{{ path('app_accueil') }}">Accueil</a>
                     {% if app.user and is_granted('ROLE_MODERATOR') %}
-                        <a class="btn ghost" href="{{ path('app_moderator') }}">Modération</a>
+                        <a class="btn ghost" href="{{ path('app_moderation') }}">Modération</a>
                     {% endif %}
                 </div>
                 <div class="nav">
-                    <span class="chip">Connectés: <strong id="online-count">0</strong></span>
+                    <span class="chip">Connectés: <strong id="compteur-connectes">0</strong></span>
                     {% if app.user %}
                         <span class="chip">Bonjour {{ app.user.pseudo }}</span>
-                        <a class="btn ghost" href="{{ path('app_profile') }}">Profil</a>
-                        <a class="btn ghost" href="{{ path('app_logout') }}">Déconnexion</a>
+                        <a class="btn ghost" href="{{ path('app_profil') }}">Profil</a>
+                        <a class="btn ghost" href="{{ path('app_deconnexion') }}">Déconnexion</a>
                     {% else %}
-                        <button class="btn ghost" id="login-open" type="button">Connexion</button>
-                        <a class="btn primary" href="{{ path('app_register') }}">Inscription</a>
+                        <button class="btn ghost" id="connexion-ouvrir" type="button">Connexion</button>
+                        <a class="btn primary" href="{{ path('app_inscription') }}">Inscription</a>
                     {% endif %}
                 </div>
             </div>
@@ -86,16 +85,16 @@
             {% endfor %}
         </div>
 
-        <dialog id="login-dialog">
+        <dialog id="connexion-dialog">
             <div class="dialog-body">
-                <form method="post" action="{{ path('app_login') }}">
+                <form method="post" action="{{ path('app_connexion') }}">
                     <strong>Connexion</strong>
                     <input type="email" name="email" placeholder="Email" required>
                     <input type="password" name="password" placeholder="Mot de passe" required>
                     <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                     <div style="display:flex; gap:8px;">
                         <button class="btn primary" type="submit">Se connecter</button>
-                        <button class="btn ghost" id="login-close" type="button">Fermer</button>
+                        <button class="btn ghost" id="connexion-fermer" type="button">Fermer</button>
                     </div>
                 </form>
             </div>

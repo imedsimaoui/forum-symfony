@@ -7,7 +7,7 @@ use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationExc
 use Symfony\Component\Security\Core\User\UserCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class VerifiedUserChecker implements UserCheckerInterface
+class VerifUtilisateurChecker implements UserCheckerInterface
 {
     public function checkPreAuth(UserInterface $user): void
     {
@@ -15,7 +15,7 @@ class VerifiedUserChecker implements UserCheckerInterface
             return;
         }
 
-        if (!$user->isVerified()) {
+        if (!$user->isVerifie()) {
             throw new CustomUserMessageAuthenticationException(
                 'Veuillez confirmer votre inscription par email avant de vous connecter.'
             );
@@ -24,6 +24,5 @@ class VerifiedUserChecker implements UserCheckerInterface
 
     public function checkPostAuth(UserInterface $user): void
     {
-        // nothing
     }
 }

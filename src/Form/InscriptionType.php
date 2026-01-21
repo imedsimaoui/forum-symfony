@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class RegistrationFormType extends AbstractType
+class InscriptionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -29,7 +29,7 @@ class RegistrationFormType extends AbstractType
                 'label' => 'Pseudo',
                 'constraints' => [new NotBlank(), new Length(min: 3, max: 50)],
             ])
-            ->add('plainPassword', RepeatedType::class, [
+            ->add('motDePasse', RepeatedType::class, [
                 'type' => PasswordType::class,
                 'mapped' => false,
                 'first_options' => ['label' => 'Mot de passe'],
@@ -43,7 +43,7 @@ class RegistrationFormType extends AbstractType
             ->add('ville', TextType::class, [
                 'label' => 'Ville',
                 'required' => false,
-                'attr' => ['list' => 'city-list', 'placeholder' => 'Commencez à taper...'],
+                'attr' => ['list' => 'liste-villes', 'placeholder' => 'Commencez à taper...'],
             ])
             ->add('captcha', TextType::class, [
                 'label' => 'Captcha',

@@ -19,50 +19,25 @@ class ThemeRepository extends ServiceEntityRepository
     /**
      * @return array<int, array{theme: Theme, sujetCount: string, lastSujetAt: ?\DateTimeInterface}>
      */
-    public function findPageWithStats(int $page, int $limit): array
+    public function trouverPageAvecStats(int $page, int $limite): array
     {
         $qb = $this->createQueryBuilder('t')
             ->leftJoin('t.sujets', 's')
             ->addSelect('COUNT(s.id) AS sujetCount')
-            ->addSelect('MAX(s.createdAt) AS lastSujetAt')
+            ->addSelect('MAX(s.creeLe) AS lastSujetAt')
             ->groupBy('t.id')
             ->orderBy('t.titre', 'ASC')
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit);
+            ->setFirstResult(($page - 1) * $limite)
+            ->setMaxResults($limite);
 
         return $qb->getQuery()->getResult();
     }
 
-    public function countAll(): int
+    public function compterTous(): int
     {
         return (int) $this->createQueryBuilder('t')
             ->select('COUNT(t.id)')
             ->getQuery()
             ->getSingleScalarResult();
     }
-
-    //    /**
-    //     * @return Theme[] Returns an array of Theme objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Theme
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

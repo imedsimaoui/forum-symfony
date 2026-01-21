@@ -19,28 +19,26 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
         parent::__construct($registry, Utilisateur::class);
     }
 
-    public function findOneByVerificationToken(string $token): ?Utilisateur
+    public function trouverParJetonConfirmation(string $jeton): ?Utilisateur
     {
         return $this->createQueryBuilder('u')
-            ->andWhere('u.verificationToken = :token')
-            ->setParameter('token', $token)
+            ->andWhere('u.jetonConfirmation = :jeton')
+            ->setParameter('jeton', $jeton)
             ->getQuery()
             ->getOneOrNullResult();
     }
 
-    public function countOnlineSince(\DateTimeImmutable $since): int
+    public function compterConnectesDepuis(\DateTimeImmutable $depuis): int
     {
         return (int) $this->createQueryBuilder('u')
             ->select('COUNT(u.id)')
-            ->andWhere('u.lastSeenAt >= :since')
-            ->setParameter('since', $since)
+            ->andWhere('u.derniereActiviteAt >= :depuis')
+            ->setParameter('depuis', $depuis)
             ->getQuery()
             ->getSingleScalarResult();
     }
 
-    /**
-     * Used to upgrade (rehash) the user's password automatically over time.
-     */
+    // upgrade mdp
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof Utilisateur) {
@@ -52,28 +50,4 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
         $this->getEntityManager()->flush();
     }
 
-    //    /**
-    //     * @return Utilisateur[] Returns an array of Utilisateur objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Utilisateur
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

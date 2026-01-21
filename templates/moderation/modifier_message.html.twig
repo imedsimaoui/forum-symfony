@@ -11,10 +11,10 @@
 <div class="wrap">
     <h1>Modifier le message</h1>
     <div class="box">
-        {{ form_start(messageForm) }}
-            {{ form_row(messageForm.contenu) }}
+        {{ form_start(formulaireMessage) }}
+            {{ form_row(formulaireMessage.contenu) }}
             <button class="btn primary" type="submit">Enregistrer</button>
-        {{ form_end(messageForm) }}
+        {{ form_end(formulaireMessage) }}
     </div>
 </div>
 {% endblock %}

@@ -40,7 +40,7 @@
                     <a href="{{ path('app_sujet', {id: sujet.id}) }}">{{ sujet.titre }}</a>
                 </div>
                 <div>
-                    {{ sujet.auteur.pseudo }} — {{ sujet.createdAt|date('d/m/Y H:i') }}
+                    {{ sujet.auteur.pseudo }} — {{ sujet.creeLe|date('d/m/Y H:i') }}
                 </div>
             </div>
         {% else %}
@@ -54,11 +54,11 @@
     {% if app.user %}
         <div class="form-box" id="new-sujet">
             <h3>Ajouter une discussion</h3>
-            {{ form_start(newSujetForm) }}
-                {{ form_row(newSujetForm.titre) }}
-                {{ form_row(newSujetForm.contenu) }}
+            {{ form_start(formulaireNouveauSujet) }}
+                {{ form_row(formulaireNouveauSujet.titre) }}
+                {{ form_row(formulaireNouveauSujet.contenu) }}
                 <button class="btn primary" type="submit">Enregistrer</button>
-            {{ form_end(newSujetForm) }}
+            {{ form_end(formulaireNouveauSujet) }}
         </div>
     {% endif %}
 

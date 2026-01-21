@@ -33,10 +33,10 @@ class Sujet
     private Collection $messages;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $creeLe = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?\DateTimeImmutable $modifieLe = null;
 
     public function __construct()
     {
@@ -44,15 +44,15 @@ class Sujet
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
+    public function setCreeLeValue(): void
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->creeLe = new \DateTimeImmutable();
     }
 
     #[ORM\PreUpdate]
-    public function setUpdatedAtValue(): void
+    public function setModifieLeValue(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->modifieLe = new \DateTimeImmutable();
     }
 
     public function getId(): ?int { return $this->id; }
@@ -67,6 +67,6 @@ class Sujet
 
     public function getMessages(): Collection { return $this->messages; }
 
-    public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
-    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+    public function getCreeLe(): ?\DateTimeImmutable { return $this->creeLe; }
+    public function getModifieLe(): ?\DateTimeImmutable { return $this->modifieLe; }
 }

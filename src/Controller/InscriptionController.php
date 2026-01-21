@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Utilisateur;
-use App\Form\RegistrationFormType;
+use App\Form\InscriptionType;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,10 +16,10 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class RegistrationController extends AbstractController
+class InscriptionController extends AbstractController
 {
-    #[Route('/register', name: 'app_register')]
-    public function register(
+    #[Route('/inscription', name: 'app_inscription')]
+    public function inscrire(
         Request $request,
         EntityManagerInterface $entityManager,
         UserPasswordHasherInterface $passwordHasher,
@@ -27,51 +27,51 @@ class RegistrationController extends AbstractController
     ): Response {
         $session = $request->getSession();
         $referer = $request->headers->get('referer');
-        if ($referer && !str_contains($referer, '/register')) {
-            $session->set('after_register_redirect', $referer);
+        if ($referer && !str_contains($referer, '/inscription')) {
+            $session->set('apres_inscription_redirect', $referer);
         }
 
-        if (!$session->has('captcha_answer')) {
+        if (!$session->has('captcha_reponse')) {
             $a = random_int(1, 9);
             $b = random_int(1, 9);
             $session->set('captcha_question', sprintf('%d + %d = ?', $a, $b));
-            $session->set('captcha_answer', (string) ($a + $b));
+            $session->set('captcha_reponse', (string) ($a + $b));
         }
 
-        $user = new Utilisateur();
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $utilisateur = new Utilisateur();
+        $form = $this->createForm(InscriptionType::class, $utilisateur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             $captcha = (string) $form->get('captcha')->getData();
-            if ($captcha !== (string) $session->get('captcha_answer')) {
+            if ($captcha !== (string) $session->get('captcha_reponse')) {
                 $form->addError(new FormError('Captcha incorrect.'));
             }
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
-                $passwordHasher->hashPassword($user, $form->get('plainPassword')->getData())
+            $utilisateur->setPassword(
+                $passwordHasher->hashPassword($utilisateur, $form->get('motDePasse')->getData())
             );
-            $user->setIsVerified(false);
-            $token = bin2hex(random_bytes(32));
-            $user->setVerificationToken($token);
-            $user->setVerificationExpiresAt((new \DateTimeImmutable())->modify('+1 day'));
+            $utilisateur->setVerifie(false);
+            $jeton = bin2hex(random_bytes(32));
+            $utilisateur->setJetonConfirmation($jeton);
+            $utilisateur->setExpirationConfirmation((new \DateTimeImmutable())->modify('+1 day'));
 
-            $entityManager->persist($user);
+            $entityManager->persist($utilisateur);
             $entityManager->flush();
 
             $verifyUrl = $this->generateUrl(
-                'app_verify_email',
-                ['token' => $token],
+                'app_confirmer_inscription',
+                ['jeton' => $jeton],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
 
             $email = (new Email())
                 ->from('no-reply@forum.local')
-                ->to($user->getEmail())
+                ->to($utilisateur->getEmail())
                 ->subject('Confirmez votre inscription')
-                ->text("Bonjour {$user->getPseudo()},\n\nConfirmez votre compte: {$verifyUrl}\n\nLe lien expire sous 24h.");
+                ->text("Bonjour {$utilisateur->getPseudo()},\n\nConfirmez votre compte: {$verifyUrl}\n\nLe lien expire sous 24h.");
 
             try {
                 $mailer->send($email);
@@ -80,42 +80,42 @@ class RegistrationController extends AbstractController
                 $this->addFlash('warning', 'Envoi email impossible. Lien de confirmation: '.$verifyUrl);
             }
 
-            $session->remove('captcha_answer');
+            $session->remove('captcha_reponse');
             $session->remove('captcha_question');
 
-            $redirect = $session->get('after_register_redirect', $this->generateUrl('app_home'));
+            $redirect = $session->get('apres_inscription_redirect', $this->generateUrl('app_accueil'));
             return $this->redirect($redirect);
         }
 
-        return $this->render('security/register.html.twig', [
-            'registrationForm' => $form->createView(),
+        return $this->render('securite/inscription.html.twig', [
+            'formulaireInscription' => $form->createView(),
             'captcha_question' => $session->get('captcha_question'),
         ]);
     }
 
-    #[Route('/verify/{token}', name: 'app_verify_email')]
-    public function verifyEmail(string $token, UtilisateurRepository $utilisateurRepository, EntityManagerInterface $entityManager): Response
+    #[Route('/confirmer/{jeton}', name: 'app_confirmer_inscription')]
+    public function confirmer(string $jeton, UtilisateurRepository $utilisateurRepository, EntityManagerInterface $entityManager): Response
     {
-        $user = $utilisateurRepository->findOneByVerificationToken($token);
+        $user = $utilisateurRepository->trouverParJetonConfirmation($jeton);
         if (!$user) {
-            return $this->render('security/verify_result.html.twig', [
+            return $this->render('securite/confirmation.html.twig', [
                 'status' => 'invalid',
             ]);
         }
 
-        $expiresAt = $user->getVerificationExpiresAt();
+        $expiresAt = $user->getExpirationConfirmation();
         if ($expiresAt && $expiresAt < new \DateTimeImmutable()) {
-            return $this->render('security/verify_result.html.twig', [
+            return $this->render('securite/confirmation.html.twig', [
                 'status' => 'expired',
             ]);
         }
 
-        $user->setIsVerified(true);
-        $user->setVerificationToken(null);
-        $user->setVerificationExpiresAt(null);
+        $user->setVerifie(true);
+        $user->setJetonConfirmation(null);
+        $user->setExpirationConfirmation(null);
         $entityManager->flush();
 
-        return $this->render('security/verify_result.html.twig', [
+        return $this->render('securite/confirmation.html.twig', [
             'status' => 'ok',
         ]);
     }

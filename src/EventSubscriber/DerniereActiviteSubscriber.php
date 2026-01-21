@@ -9,7 +9,7 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Security;
 
-class LastSeenSubscriber implements EventSubscriberInterface
+class DerniereActiviteSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         private Security $security,
@@ -29,18 +29,18 @@ class LastSeenSubscriber implements EventSubscriberInterface
             return;
         }
 
-        $user = $this->security->getUser();
-        if (!$user instanceof Utilisateur) {
+        $utilisateur = $this->security->getUser();
+        if (!$utilisateur instanceof Utilisateur) {
             return;
         }
 
         $now = new \DateTimeImmutable();
-        $lastSeen = $user->getLastSeenAt();
+        $lastSeen = $utilisateur->getDerniereActiviteAt();
         if ($lastSeen !== null && $lastSeen->getTimestamp() > ($now->getTimestamp() - 60)) {
             return;
         }
 
-        $user->setLastSeenAt($now);
+        $utilisateur->setDerniereActiviteAt($now);
         $this->entityManager->flush();
     }
 }

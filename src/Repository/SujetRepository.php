@@ -20,19 +20,19 @@ class SujetRepository extends ServiceEntityRepository
     /**
      * @return Sujet[]
      */
-    public function findPageByTheme(Theme $theme, int $page, int $limit): array
+    public function trouverPageParTheme(Theme $theme, int $page, int $limite): array
     {
         return $this->createQueryBuilder('s')
             ->andWhere('s.theme = :theme')
             ->setParameter('theme', $theme)
-            ->orderBy('s.createdAt', 'ASC')
-            ->setFirstResult(($page - 1) * $limit)
-            ->setMaxResults($limit)
+            ->orderBy('s.creeLe', 'ASC')
+            ->setFirstResult(($page - 1) * $limite)
+            ->setMaxResults($limite)
             ->getQuery()
             ->getResult();
     }
 
-    public function countByTheme(Theme $theme): int
+    public function compterParTheme(Theme $theme): int
     {
         return (int) $this->createQueryBuilder('s')
             ->select('COUNT(s.id)')
@@ -42,28 +42,5 @@ class SujetRepository extends ServiceEntityRepository
             ->getSingleScalarResult();
     }
 
-    //    /**
-    //     * @return Sujet[] Returns an array of Sujet objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
 
-    //    public function findOneBySomeField($value): ?Sujet
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }

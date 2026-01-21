@@ -4,12 +4,12 @@ namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-final class ThemeControllerTest extends WebTestCase
+final class AccueilControllerTest extends WebTestCase
 {
-    public function testIndex(): void
+    public function testAccueil(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/theme');
+        $client->request('GET', '/');
 
         self::assertResponseIsSuccessful();
     }

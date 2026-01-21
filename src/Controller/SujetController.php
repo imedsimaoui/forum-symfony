@@ -15,17 +15,17 @@ use Symfony\Component\Routing\Attribute\Route;
 final class SujetController extends AbstractController
 {
     #[Route('/sujet/{id}', name: 'app_sujet', requirements: ['id' => '\d+'])]
-    public function show(
+    public function afficher(
         Sujet $sujet,
-        MessageRepository $messageRepository,
+        MessageRepository $repoMessage,
         Request $request,
         EntityManagerInterface $entityManager
     ): Response
     {
-        $messages = $messageRepository->findBySujetOrdered($sujet);
+        $messages = $repoMessage->trouverParSujetTrie($sujet);
 
-        $newMessage = new Message();
-        $form = $this->createForm(MessageType::class, $newMessage, [
+        $nouveauMessage = new Message();
+        $form = $this->createForm(MessageType::class, $nouveauMessage, [
             'action' => $this->generateUrl('app_sujet', ['id' => $sujet->getId()]),
         ]);
         $form->handleRequest($request);
@@ -33,9 +33,9 @@ final class SujetController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->denyAccessUnlessGranted('ROLE_USER');
 
-            $newMessage->setSujet($sujet);
-            $newMessage->setAuteur($this->getUser());
-            $entityManager->persist($newMessage);
+            $nouveauMessage->setSujet($sujet);
+            $nouveauMessage->setAuteur($this->getUser());
+            $entityManager->persist($nouveauMessage);
             $entityManager->flush();
 
             return $this->redirectToRoute('app_sujet', ['id' => $sujet->getId()]);
@@ -44,7 +44,7 @@ final class SujetController extends AbstractController
         return $this->render('sujet/index.html.twig', [
             'sujet' => $sujet,
             'messages' => $messages,
-            'messageForm' => $form->createView(),
+            'formulaireMessage' => $form->createView(),
         ]);
     }
 }

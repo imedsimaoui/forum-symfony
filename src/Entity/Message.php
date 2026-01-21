@@ -28,21 +28,21 @@ class Message
     private Utilisateur $auteur;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $creeLe = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $updatedAt = null;
+    private ?\DateTimeImmutable $modifieLe = null;
 
     #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
+    public function setCreeLeValue(): void
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->creeLe = new \DateTimeImmutable();
     }
 
     #[ORM\PreUpdate]
-    public function setUpdatedAtValue(): void
+    public function setModifieLeValue(): void
     {
-        $this->updatedAt = new \DateTimeImmutable();
+        $this->modifieLe = new \DateTimeImmutable();
     }
 
     public function getId(): ?int { return $this->id; }
@@ -55,6 +55,6 @@ class Message
     public function getAuteur(): Utilisateur { return $this->auteur; }
     public function setAuteur(Utilisateur $auteur): self { $this->auteur = $auteur; return $this; }
 
-    public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
-    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+    public function getCreeLe(): ?\DateTimeImmutable { return $this->creeLe; }
+    public function getModifieLe(): ?\DateTimeImmutable { return $this->modifieLe; }
 }

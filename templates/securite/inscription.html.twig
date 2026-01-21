@@ -12,20 +12,20 @@
 <div class="wrap">
     <h1>Inscription</h1>
     <div class="box">
-        {{ form_start(registrationForm) }}
-            {{ form_row(registrationForm.email) }}
-            {{ form_row(registrationForm.pseudo) }}
-            {{ form_row(registrationForm.plainPassword) }}
-            {{ form_row(registrationForm.nom) }}
-            {{ form_row(registrationForm.prenom) }}
-            {{ form_row(registrationForm.age) }}
-            {{ form_row(registrationForm.telephone) }}
-            {{ form_row(registrationForm.ville) }}
+        {{ form_start(formulaireInscription) }}
+            {{ form_row(formulaireInscription.email) }}
+            {{ form_row(formulaireInscription.pseudo) }}
+            {{ form_row(formulaireInscription.motDePasse) }}
+            {{ form_row(formulaireInscription.nom) }}
+            {{ form_row(formulaireInscription.prenom) }}
+            {{ form_row(formulaireInscription.age) }}
+            {{ form_row(formulaireInscription.telephone) }}
+            {{ form_row(formulaireInscription.ville) }}
             <div class="captcha">Captcha: {{ captcha_question }}</div>
-            {{ form_row(registrationForm.captcha) }}
+            {{ form_row(formulaireInscription.captcha) }}
             <button class="btn primary" type="submit">Créer mon compte</button>
-        {{ form_end(registrationForm) }}
-        <datalist id="city-list">
+        {{ form_end(formulaireInscription) }}
+        <datalist id="liste-villes">
             <option value="Amiens"></option>
             <option value="Paris"></option>
             <option value="Lille"></option>

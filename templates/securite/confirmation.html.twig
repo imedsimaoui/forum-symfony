@@ -13,15 +13,15 @@
         {% if status == 'ok' %}
             <h1>Merci !</h1>
             <p>Votre inscription est confirmée. Vous pouvez maintenant vous connecter.</p>
-            <a class="btn primary" href="{{ path('app_login') }}">Se connecter</a>
+            <a class="btn primary" href="{{ path('app_connexion') }}">Se connecter</a>
         {% elseif status == 'expired' %}
             <h1>Lien expiré</h1>
             <p>Le lien de confirmation a expiré. Recommencez l’inscription.</p>
-            <a class="btn ghost" href="{{ path('app_register') }}">Revenir à l’inscription</a>
+            <a class="btn ghost" href="{{ path('app_inscription') }}">Revenir à l’inscription</a>
         {% else %}
             <h1>Lien invalide</h1>
             <p>Le lien n’est pas valide.</p>
-            <a class="btn ghost" href="{{ path('app_register') }}">Revenir à l’inscription</a>
+            <a class="btn ghost" href="{{ path('app_inscription') }}">Revenir à l’inscription</a>
         {% endif %}
     </div>
 </div>

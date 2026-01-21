@@ -11,19 +11,17 @@ use App\Repository\UtilisateurRepository;
 final class ApiController extends AbstractController
 {
     #[Route('/api', name: 'app_api')]
-    public function index(): Response
+    public function pageApi(): Response
     {
-        return $this->render('api/index.html.twig', [
-            'controller_name' => 'ApiController',
-        ]);
+        return $this->render('api/index.html.twig');
     }
 
-    #[Route('/api/online-count', name: 'app_api_online_count')]
-    public function onlineCount(UtilisateurRepository $utilisateurRepository): JsonResponse
+    #[Route('/api/compteur-connectes', name: 'app_api_compteur_connectes')]
+    public function compteurConnectes(UtilisateurRepository $utilisateurRepository): JsonResponse
     {
-        $since = (new \DateTimeImmutable())->modify('-15 seconds');
-        $count = $utilisateurRepository->countOnlineSince($since);
+        $depuis = (new \DateTimeImmutable())->modify('-15 seconds');
+        $compteur = $utilisateurRepository->compterConnectesDepuis($depuis);
 
-        return new JsonResponse(['count' => $count]);
+        return new JsonResponse(['count' => $compteur]);
     }
 }

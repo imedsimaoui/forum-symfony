@@ -17,13 +17,13 @@
 
     {% for message in messages %}
         <div class="message">
-            <div class="meta">{{ message.auteur.pseudo }} — {{ message.createdAt|date('d/m/Y H:i') }}</div>
+            <div class="meta">{{ message.auteur.pseudo }} — {{ message.creeLe|date('d/m/Y H:i') }}</div>
             <div>{{ message.contenu|nl2br }}</div>
             {% if is_granted('ROLE_MODERATOR') %}
                 <div class="mod-actions">
-                    <a class="btn ghost" href="{{ path('app_moderator_message_edit', {id: message.id}) }}">Modifier</a>
-                    <form method="post" action="{{ path('app_moderator_message_delete', {id: message.id}) }}">
-                        <input type="hidden" name="_token" value="{{ csrf_token('delete_message_' ~ message.id) }}">
+                    <a class="btn ghost" href="{{ path('app_moderation_message_modifier', {id: message.id}) }}">Modifier</a>
+                    <form method="post" action="{{ path('app_moderation_message_supprimer', {id: message.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('supprimer_message_' ~ message.id) }}">
                         <button class="btn ghost" type="submit" onclick="return confirm('Supprimer ce message ?');">Supprimer</button>
                     </form>
                 </div>
@@ -36,32 +36,32 @@
     {% if app.user %}
         <div class="form-box">
             <div id="message-actions">
-                <button class="btn primary" type="button" id="open-message-form">Ajouter un message</button>
+                <button class="btn primary" type="button" id="message-ouvrir">Ajouter un message</button>
             </div>
-            <div id="message-form" style="display:none;">
+            <div id="message-formulaire" style="display:none;">
                 <h3>Ajouter un message</h3>
-                {{ form_start(messageForm) }}
-                    {{ form_row(messageForm.contenu) }}
+                {{ form_start(formulaireMessage) }}
+                    {{ form_row(formulaireMessage.contenu) }}
                     <div style="display:flex; gap:8px;">
                         <button class="btn primary" type="submit">Enregistrer</button>
-                        <button class="btn ghost" type="button" id="close-message-form">Fermer</button>
+                        <button class="btn ghost" type="button" id="message-fermer">Fermer</button>
                     </div>
-                {{ form_end(messageForm) }}
+                {{ form_end(formulaireMessage) }}
             </div>
         </div>
         <script>
             window.addEventListener('DOMContentLoaded', () => {
-                const openBtn = document.getElementById('open-message-form');
-                const closeBtn = document.getElementById('close-message-form');
-                const form = document.getElementById('message-form');
+                const boutonOuvrir = document.getElementById('message-ouvrir');
+                const boutonFermer = document.getElementById('message-fermer');
+                const formulaire = document.getElementById('message-formulaire');
                 const actions = document.getElementById('message-actions');
-                if (openBtn && closeBtn && form && actions) {
-                    openBtn.addEventListener('click', () => {
-                        form.style.display = 'block';
+                if (boutonOuvrir && boutonFermer && formulaire && actions) {
+                    boutonOuvrir.addEventListener('click', () => {
+                        formulaire.style.display = 'block';
                         actions.style.display = 'none';
                     });
-                    closeBtn.addEventListener('click', () => {
-                        form.style.display = 'none';
+                    boutonFermer.addEventListener('click', () => {
+                        formulaire.style.display = 'none';
                         actions.style.display = 'block';
                     });
                 }

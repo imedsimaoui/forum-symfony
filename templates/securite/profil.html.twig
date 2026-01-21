@@ -11,16 +11,16 @@
 <div class="wrap">
     <h1>Mon profil</h1>
     <div class="box">
-        {{ form_start(profileForm) }}
-            {{ form_row(profileForm.pseudo) }}
-            {{ form_row(profileForm.nom) }}
-            {{ form_row(profileForm.prenom) }}
-            {{ form_row(profileForm.age) }}
-            {{ form_row(profileForm.telephone) }}
-            {{ form_row(profileForm.ville) }}
+        {{ form_start(formulaireProfil) }}
+            {{ form_row(formulaireProfil.pseudo) }}
+            {{ form_row(formulaireProfil.nom) }}
+            {{ form_row(formulaireProfil.prenom) }}
+            {{ form_row(formulaireProfil.age) }}
+            {{ form_row(formulaireProfil.telephone) }}
+            {{ form_row(formulaireProfil.ville) }}
             <button class="btn primary" type="submit">Enregistrer</button>
-        {{ form_end(profileForm) }}
-        <datalist id="city-list">
+        {{ form_end(formulaireProfil) }}
+        <datalist id="liste-villes">
             <option value="Amiens"></option>
             <option value="Paris"></option>
             <option value="Lille"></option>

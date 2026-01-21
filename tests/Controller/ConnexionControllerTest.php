@@ -4,12 +4,12 @@ namespace App\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-final class SujetControllerTest extends WebTestCase
+final class ConnexionControllerTest extends WebTestCase
 {
-    public function testIndex(): void
+    public function testConnexion(): void
     {
         $client = static::createClient();
-        $client->request('GET', '/sujet');
+        $client->request('GET', '/connexion');
 
         self::assertResponseIsSuccessful();
     }

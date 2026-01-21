@@ -25,7 +25,7 @@ class Theme
     private Collection $sujets;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $creeLe = null;
 
     public function __construct()
     {
@@ -33,14 +33,14 @@ class Theme
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
+    public function setCreeLeValue(): void
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->creeLe = new \DateTimeImmutable();
     }
 
     public function getId(): ?int { return $this->id; }
     public function getTitre(): string { return $this->titre; }
     public function setTitre(string $titre): self { $this->titre = $titre; return $this; }
     public function getSujets(): Collection { return $this->sujets; }
-    public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
+    public function getCreeLe(): ?\DateTimeImmutable { return $this->creeLe; }
 }

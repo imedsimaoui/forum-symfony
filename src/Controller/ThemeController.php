@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Message;
 use App\Entity\Sujet;
 use App\Entity\Theme;
-use App\Form\NewSujetType;
+use App\Form\NouveauSujetType;
 use App\Repository\SujetRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,21 +16,21 @@ use Symfony\Component\Routing\Attribute\Route;
 final class ThemeController extends AbstractController
 {
     #[Route('/theme/{id}', name: 'app_theme', requirements: ['id' => '\d+'])]
-    public function show(
+    public function afficher(
         Theme $theme,
         Request $request,
-        SujetRepository $sujetRepository,
+        SujetRepository $repoSujet,
         EntityManagerInterface $entityManager
     ): Response
     {
         $page = max(1, (int) $request->query->get('page', 1));
-        $limit = 10;
-        $sujets = $sujetRepository->findPageByTheme($theme, $page, $limit);
-        $total = $sujetRepository->countByTheme($theme);
-        $pages = (int) ceil($total / $limit);
+        $limite = 10;
+        $sujets = $repoSujet->trouverPageParTheme($theme, $page, $limite);
+        $total = $repoSujet->compterParTheme($theme);
+        $pages = (int) ceil($total / $limite);
 
-        $newSujet = new Sujet();
-        $form = $this->createForm(NewSujetType::class, $newSujet, [
+        $nouveauSujet = new Sujet();
+        $form = $this->createForm(NouveauSujetType::class, $nouveauSujet, [
             'action' => $this->generateUrl('app_theme', ['id' => $theme->getId()]),
         ]);
         $form->handleRequest($request);
@@ -38,12 +38,12 @@ final class ThemeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->denyAccessUnlessGranted('ROLE_USER');
 
-            $newSujet->setTheme($theme);
-            $newSujet->setAuteur($this->getUser());
-            $entityManager->persist($newSujet);
+            $nouveauSujet->setTheme($theme);
+            $nouveauSujet->setAuteur($this->getUser());
+            $entityManager->persist($nouveauSujet);
 
             $message = new Message();
-            $message->setSujet($newSujet);
+            $message->setSujet($nouveauSujet);
             $message->setAuteur($this->getUser());
             $message->setContenu($form->get('contenu')->getData());
             $entityManager->persist($message);
@@ -58,7 +58,7 @@ final class ThemeController extends AbstractController
             'sujets' => $sujets,
             'page' => $page,
             'pages' => $pages,
-            'newSujetForm' => $form->createView(),
+            'formulaireNouveauSujet' => $form->createView(),
         ]);
     }
 }

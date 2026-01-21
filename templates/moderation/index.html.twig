@@ -15,10 +15,10 @@
 
     <div class="section">
         <h3>Ajouter un thème</h3>
-        {{ form_start(themeForm) }}
-            {{ form_row(themeForm.titre) }}
+        {{ form_start(formulaireTheme) }}
+            {{ form_row(formulaireTheme.titre) }}
             <button class="btn primary" type="submit">Créer</button>
-        {{ form_end(themeForm) }}
+        {{ form_end(formulaireTheme) }}
     </div>
 
     <div class="section">
@@ -33,12 +33,12 @@
                 </tr>
             </thead>
             <tbody>
-                {% for user in users %}
+                {% for user in utilisateurs %}
                     <tr>
                         <td>{{ user.email }}</td>
                         <td>{{ user.pseudo }}</td>
-                        <td>{{ user.isVerified ? 'Oui' : 'Non' }}</td>
-                        <td>{{ user.isModerator ? 'Modérateur' : 'Participant' }}</td>
+                        <td>{{ user.verifie ? 'Oui' : 'Non' }}</td>
+                        <td>{{ user.moderateur ? 'Modérateur' : 'Participant' }}</td>
                     </tr>
                 {% else %}
                     <tr><td colspan="4">Aucun utilisateur.</td></tr>

@@ -46,19 +46,19 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $ville = null;
 
     #[ORM\Column]
-    private bool $isModerator = false;
+    private bool $moderateur = false;
 
     #[ORM\Column(options: ['default' => false])]
-    private bool $isVerified = false;
+    private bool $verifie = false;
 
     #[ORM\Column(length: 64, nullable: true, unique: true)]
-    private ?string $verificationToken = null;
+    private ?string $jetonConfirmation = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $verificationExpiresAt = null;
+    private ?\DateTimeImmutable $expirationConfirmation = null;
 
     #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $lastSeenAt = null;
+    private ?\DateTimeImmutable $derniereActiviteAt = null;
 
     public function getId(): ?int { return $this->id; }
     public function getEmail(): ?string { return $this->email; }
@@ -85,22 +85,22 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function getVille(): ?string { return $this->ville; }
     public function setVille(?string $ville): self { $this->ville = $ville; return $this; }
 
-    public function isModerator(): bool { return $this->isModerator; }
-    public function setIsModerator(bool $isModerator): self { $this->isModerator = $isModerator; return $this; }
+    public function isModerateur(): bool { return $this->moderateur; }
+    public function setModerateur(bool $moderateur): self { $this->moderateur = $moderateur; return $this; }
 
-    public function isVerified(): bool { return $this->isVerified; }
-    public function setIsVerified(bool $isVerified): self { $this->isVerified = $isVerified; return $this; }
+    public function isVerifie(): bool { return $this->verifie; }
+    public function setVerifie(bool $verifie): self { $this->verifie = $verifie; return $this; }
 
-    public function getVerificationToken(): ?string { return $this->verificationToken; }
-    public function setVerificationToken(?string $verificationToken): self { $this->verificationToken = $verificationToken; return $this; }
+    public function getJetonConfirmation(): ?string { return $this->jetonConfirmation; }
+    public function setJetonConfirmation(?string $jetonConfirmation): self { $this->jetonConfirmation = $jetonConfirmation; return $this; }
 
-    public function getVerificationExpiresAt(): ?\DateTimeImmutable { return $this->verificationExpiresAt; }
-    public function setVerificationExpiresAt(?\DateTimeImmutable $verificationExpiresAt): self { $this->verificationExpiresAt = $verificationExpiresAt; return $this; }
+    public function getExpirationConfirmation(): ?\DateTimeImmutable { return $this->expirationConfirmation; }
+    public function setExpirationConfirmation(?\DateTimeImmutable $expirationConfirmation): self { $this->expirationConfirmation = $expirationConfirmation; return $this; }
 
-    public function getLastSeenAt(): ?\DateTimeImmutable { return $this->lastSeenAt; }
-    public function setLastSeenAt(?\DateTimeImmutable $lastSeenAt): self { $this->lastSeenAt = $lastSeenAt; return $this; }
+    public function getDerniereActiviteAt(): ?\DateTimeImmutable { return $this->derniereActiviteAt; }
+    public function setDerniereActiviteAt(?\DateTimeImmutable $derniereActiviteAt): self { $this->derniereActiviteAt = $derniereActiviteAt; return $this; }
 
     public function getUserIdentifier(): string { return $this->email; }
-    public function getRoles(): array { return $this->isModerator ? ['ROLE_USER','ROLE_MODERATOR'] : ['ROLE_USER']; }
+    public function getRoles(): array { return $this->moderateur ? ['ROLE_USER','ROLE_MODERATOR'] : ['ROLE_USER']; }
     public function eraseCredentials() {}
 }

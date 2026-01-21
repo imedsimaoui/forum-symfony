@@ -28,7 +28,7 @@
             {% if themes|length > 0 %}
                 <a class="btn primary" href="{{ path('app_theme', {id: themes[0].theme.id}) }}">Voir un thème</a>
             {% endif %}
-            <a class="btn ghost" href="{{ path('app_login') }}">Se connecter</a>
+            <a class="btn ghost" href="{{ path('app_connexion') }}">Se connecter</a>
         </div>
     </section>
 
@@ -60,7 +60,7 @@
             {% if pages > 1 %}
                 <div class="pager">
                     {% for p in 1..pages %}
-                        <a class="btn ghost" href="{{ path('app_home', {page: p}) }}">{{ p }}</a>
+                        <a class="btn ghost" href="{{ path('app_accueil', {page: p}) }}">{{ p }}</a>
                     {% endfor %}
                 </div>
             {% endif %}
