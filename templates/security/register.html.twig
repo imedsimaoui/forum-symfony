@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+<style>
+    .wrap { max-width: 600px; margin: 0 auto; padding: 24px 20px 64px; }
+    .box { background: rgba(17, 24, 39, 0.9); border: 1px solid #1f2937; border-radius: 12px; padding: 16px; }
+    .captcha { color: var(--muted); font-size: 14px; margin-top: 6px; }
+</style>
+
+<div class="wrap">
+    <h1>Inscription</h1>
+    <div class="box">
+        {{ form_start(registrationForm) }}
+            {{ form_row(registrationForm.email) }}
+            {{ form_row(registrationForm.pseudo) }}
+            {{ form_row(registrationForm.plainPassword) }}
+            {{ form_row(registrationForm.nom) }}
+            {{ form_row(registrationForm.prenom) }}
+            {{ form_row(registrationForm.age) }}
+            {{ form_row(registrationForm.telephone) }}
+            {{ form_row(registrationForm.ville) }}
+            <div class="captcha">Captcha: {{ captcha_question }}</div>
+            {{ form_row(registrationForm.captcha) }}
+            <button class="btn primary" type="submit">Créer mon compte</button>
+        {{ form_end(registrationForm) }}
+        <datalist id="city-list">
+            <option value="Amiens"></option>
+            <option value="Paris"></option>
+            <option value="Lille"></option>
+            <option value="Lyon"></option>
+            <option value="Marseille"></option>
+            <option value="Toulouse"></option>
+            <option value="Bordeaux"></option>
+            <option value="Nantes"></option>
+            <option value="Montpellier"></option>
+            <option value="Strasbourg"></option>
+        </datalist>
+    </div>
+</div>
+{% endblock %}

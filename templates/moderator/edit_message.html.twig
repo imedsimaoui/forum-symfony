@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un message{% endblock %}
+
+{% block body %}
+<style>
+    .wrap { max-width: 800px; margin: 0 auto; padding: 24px 20px 64px; }
+    .box { background: rgba(17, 24, 39, 0.9); border: 1px solid #1f2937; border-radius: 12px; padding: 16px; }
+</style>
+
+<div class="wrap">
+    <h1>Modifier le message</h1>
+    <div class="box">
+        {{ form_start(messageForm) }}
+            {{ form_row(messageForm.contenu) }}
+            <button class="btn primary" type="submit">Enregistrer</button>
+        {{ form_end(messageForm) }}
+    </div>
+</div>
+{% endblock %}

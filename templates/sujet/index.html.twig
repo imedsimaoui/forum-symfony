@@ -1,20 +1,72 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello SujetController!{% endblock %}
+{% block title %}Discussion — {{ sujet.titre }}{% endblock %}
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 24px 20px 64px; }
+    .message { background: rgba(17, 24, 39, 0.7); border: 1px solid #1f2937; border-radius: 12px; padding: 12px; margin-bottom: 10px; }
+    .meta { color: var(--muted); font-size: 13px; margin-bottom: 6px; }
+    .form-box { margin-top: 18px; background: rgba(17, 24, 39, 0.9); border: 1px solid #1f2937; border-radius: 12px; padding: 16px; }
+    .mod-actions { display: flex; gap: 8px; margin-top: 8px; }
 </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div class="wrap">
+    <h1>{{ sujet.titre }}</h1>
+    <p class="meta">Thème: <a href="{{ path('app_theme', {id: sujet.theme.id}) }}">{{ sujet.theme.titre }}</a></p>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/Users/simaouiimed/forum/src/Controller/SujetController.php</code></li>
-        <li>Your template at <code>/Users/simaouiimed/forum/templates/sujet/index.html.twig</code></li>
-    </ul>
+    {% for message in messages %}
+        <div class="message">
+            <div class="meta">{{ message.auteur.pseudo }} — {{ message.createdAt|date('d/m/Y H:i') }}</div>
+            <div>{{ message.contenu|nl2br }}</div>
+            {% if is_granted('ROLE_MODERATOR') %}
+                <div class="mod-actions">
+                    <a class="btn ghost" href="{{ path('app_moderator_message_edit', {id: message.id}) }}">Modifier</a>
+                    <form method="post" action="{{ path('app_moderator_message_delete', {id: message.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete_message_' ~ message.id) }}">
+                        <button class="btn ghost" type="submit" onclick="return confirm('Supprimer ce message ?');">Supprimer</button>
+                    </form>
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="message">Aucun message pour le moment.</div>
+    {% endfor %}
+
+    {% if app.user %}
+        <div class="form-box">
+            <div id="message-actions">
+                <button class="btn primary" type="button" id="open-message-form">Ajouter un message</button>
+            </div>
+            <div id="message-form" style="display:none;">
+                <h3>Ajouter un message</h3>
+                {{ form_start(messageForm) }}
+                    {{ form_row(messageForm.contenu) }}
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn primary" type="submit">Enregistrer</button>
+                        <button class="btn ghost" type="button" id="close-message-form">Fermer</button>
+                    </div>
+                {{ form_end(messageForm) }}
+            </div>
+        </div>
+        <script>
+            window.addEventListener('DOMContentLoaded', () => {
+                const openBtn = document.getElementById('open-message-form');
+                const closeBtn = document.getElementById('close-message-form');
+                const form = document.getElementById('message-form');
+                const actions = document.getElementById('message-actions');
+                if (openBtn && closeBtn && form && actions) {
+                    openBtn.addEventListener('click', () => {
+                        form.style.display = 'block';
+                        actions.style.display = 'none';
+                    });
+                    closeBtn.addEventListener('click', () => {
+                        form.style.display = 'none';
+                        actions.style.display = 'block';
+                    });
+                }
+            });
+        </script>
+    {% endif %}
 </div>
 {% endblock %}

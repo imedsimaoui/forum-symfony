@@ -2,16 +2,104 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Forum{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
+            <style>
+                :root { --bg: #0f172a; --card: #111827; --accent: #22d3ee; --muted: #94a3b8; --text: #e2e8f0; }
+                * { box-sizing: border-box; }
+                body { margin: 0; font-family: "Trebuchet MS", "Segoe UI", Tahoma, sans-serif; background: radial-gradient(1200px 500px at 20% -10%, #1f2937 0%, #0b1220 60%, #060910 100%); color: var(--text); }
+                a { color: var(--accent); text-decoration: none; }
+                header { background: rgba(2, 6, 23, 0.8); border-bottom: 1px solid #1f2937; }
+                .container { max-width: 1100px; margin: 0 auto; padding: 16px 20px; }
+                .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+                .brand { font-weight: 800; letter-spacing: 0.5px; }
+                .nav { display: flex; gap: 12px; flex-wrap: wrap; }
+                .chip { background: #0b1220; border: 1px solid #1f2937; border-radius: 999px; padding: 6px 12px; font-size: 13px; color: var(--muted); }
+                .btn { display: inline-block; padding: 8px 14px; border-radius: 10px; text-decoration: none; font-weight: 700; }
+                .btn.primary { background: var(--accent); color: #0b1120; }
+                .btn.ghost { border: 1px solid #334155; color: var(--text); }
+                .flash { margin: 12px 0; padding: 10px 12px; border-radius: 10px; background: #0b1220; border: 1px solid #1f2937; color: var(--muted); }
+                dialog { border: 1px solid #1f2937; border-radius: 14px; padding: 0; background: #0b1220; color: var(--text); }
+                dialog::backdrop { background: rgba(2, 6, 23, 0.6); }
+                .dialog-body { padding: 18px; min-width: 280px; }
+                .dialog-body form { display: grid; gap: 10px; }
+                .dialog-body input { padding: 8px; border-radius: 8px; border: 1px solid #1f2937; background: #0b1220; color: var(--text); }
+            </style>
         {% endblock %}
 
         {% block javascripts %}
             {% block importmap %}{{ importmap('app') }}{% endblock %}
+            <script>
+                window.addEventListener('DOMContentLoaded', () => {
+                    const dialog = document.getElementById('login-dialog');
+                    const openBtn = document.getElementById('login-open');
+                    const closeBtn = document.getElementById('login-close');
+                    if (openBtn && dialog) openBtn.addEventListener('click', () => dialog.showModal());
+                    if (closeBtn && dialog) closeBtn.addEventListener('click', () => dialog.close());
+
+                    const counter = document.getElementById('online-count');
+                    async function refreshOnline() {
+                        if (!counter) return;
+                        try {
+                            const res = await fetch('{{ path('app_api_online_count') }}', { headers: { 'Accept': 'application/json' } });
+                            const data = await res.json();
+                            counter.textContent = data.count;
+                        } catch (e) {
+                            // ignore
+                        }
+                    }
+                    refreshOnline();
+                    setInterval(refreshOnline, 15000);
+                });
+            </script>
         {% endblock %}
     </head>
     <body>
+        <header>
+            <div class="container topbar">
+                <div class="brand"><a href="{{ path('app_home') }}">Forum Symfony</a></div>
+                <div class="nav">
+                    <a class="btn ghost" href="{{ path('app_home') }}">Accueil</a>
+                    {% if app.user and is_granted('ROLE_MODERATOR') %}
+                        <a class="btn ghost" href="{{ path('app_moderator') }}">Modération</a>
+                    {% endif %}
+                </div>
+                <div class="nav">
+                    <span class="chip">Connectés: <strong id="online-count">0</strong></span>
+                    {% if app.user %}
+                        <span class="chip">Bonjour {{ app.user.pseudo }}</span>
+                        <a class="btn ghost" href="{{ path('app_profile') }}">Profil</a>
+                        <a class="btn ghost" href="{{ path('app_logout') }}">Déconnexion</a>
+                    {% else %}
+                        <button class="btn ghost" id="login-open" type="button">Connexion</button>
+                        <a class="btn primary" href="{{ path('app_register') }}">Inscription</a>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+        <div class="container">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="flash">{{ message }}</div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+
+        <dialog id="login-dialog">
+            <div class="dialog-body">
+                <form method="post" action="{{ path('app_login') }}">
+                    <strong>Connexion</strong>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Mot de passe" required>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn primary" type="submit">Se connecter</button>
+                        <button class="btn ghost" id="login-close" type="button">Fermer</button>
+                    </div>
+                </form>
+            </div>
+        </dialog>
         {% block body %}{% endblock %}
     </body>
 </html>

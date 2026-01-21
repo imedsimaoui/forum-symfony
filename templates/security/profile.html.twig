@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil{% endblock %}
+
+{% block body %}
+<style>
+    .wrap { max-width: 600px; margin: 0 auto; padding: 24px 20px 64px; }
+    .box { background: rgba(17, 24, 39, 0.9); border: 1px solid #1f2937; border-radius: 12px; padding: 16px; }
+</style>
+
+<div class="wrap">
+    <h1>Mon profil</h1>
+    <div class="box">
+        {{ form_start(profileForm) }}
+            {{ form_row(profileForm.pseudo) }}
+            {{ form_row(profileForm.nom) }}
+            {{ form_row(profileForm.prenom) }}
+            {{ form_row(profileForm.age) }}
+            {{ form_row(profileForm.telephone) }}
+            {{ form_row(profileForm.ville) }}
+            <button class="btn primary" type="submit">Enregistrer</button>
+        {{ form_end(profileForm) }}
+        <datalist id="city-list">
+            <option value="Amiens"></option>
+            <option value="Paris"></option>
+            <option value="Lille"></option>
+            <option value="Lyon"></option>
+            <option value="Marseille"></option>
+            <option value="Toulouse"></option>
+            <option value="Bordeaux"></option>
+            <option value="Nantes"></option>
+            <option value="Montpellier"></option>
+            <option value="Strasbourg"></option>
+        </datalist>
+    </div>
+</div>
+{% endblock %}

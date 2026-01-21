@@ -16,6 +16,31 @@ class ThemeRepository extends ServiceEntityRepository
         parent::__construct($registry, Theme::class);
     }
 
+    /**
+     * @return array<int, array{theme: Theme, sujetCount: string, lastSujetAt: ?\DateTimeInterface}>
+     */
+    public function findPageWithStats(int $page, int $limit): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->leftJoin('t.sujets', 's')
+            ->addSelect('COUNT(s.id) AS sujetCount')
+            ->addSelect('MAX(s.createdAt) AS lastSujetAt')
+            ->groupBy('t.id')
+            ->orderBy('t.titre', 'ASC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countAll(): int
+    {
+        return (int) $this->createQueryBuilder('t')
+            ->select('COUNT(t.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Theme[] Returns an array of Theme objects
     //     */

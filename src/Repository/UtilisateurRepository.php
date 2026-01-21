@@ -19,6 +19,25 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
         parent::__construct($registry, Utilisateur::class);
     }
 
+    public function findOneByVerificationToken(string $token): ?Utilisateur
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.verificationToken = :token')
+            ->setParameter('token', $token)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    public function countOnlineSince(\DateTimeImmutable $since): int
+    {
+        return (int) $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->andWhere('u.lastSeenAt >= :since')
+            ->setParameter('since', $since)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     /**
      * Used to upgrade (rehash) the user's password automatically over time.
      */

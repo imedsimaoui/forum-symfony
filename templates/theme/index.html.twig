@@ -1,20 +1,73 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ThemeController!{% endblock %}
+{% block title %}Thème — {{ theme.titre }}{% endblock %}
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 24px 20px 64px; }
+    .list { display: grid; gap: 10px; }
+    .row { display: grid; gap: 10px; grid-template-columns: 2fr 1fr; align-items: center; }
+    .row > div { background: rgba(17, 24, 39, 0.7); border: 1px solid #1f2937; border-radius: 12px; padding: 10px; }
+    .pager { display: flex; gap: 8px; margin: 18px 0; }
+    .form-box { margin: 18px 0; background: rgba(17, 24, 39, 0.9); border: 1px solid #1f2937; border-radius: 12px; padding: 16px; }
 </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div class="wrap">
+    <h1>{{ theme.titre }}</h1>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/Users/simaouiimed/forum/src/Controller/ThemeController.php</code></li>
-        <li>Your template at <code>/Users/simaouiimed/forum/templates/theme/index.html.twig</code></li>
-    </ul>
+    {% if app.user %}
+        <div class="form-box">
+            <a class="btn primary" href="#new-sujet">Ajouter une discussion</a>
+        </div>
+    {% endif %}
+
+    {% if pages > 1 %}
+        <div class="pager">
+            {% for p in 1..pages %}
+                <a class="btn ghost" href="{{ path('app_theme', {id: theme.id, page: p}) }}">{{ p }}</a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div class="list">
+        <div class="row">
+            <div><strong>Discussion</strong></div>
+            <div><strong>Infos</strong></div>
+        </div>
+        {% for sujet in sujets %}
+            <div class="row">
+                <div>
+                    <a href="{{ path('app_sujet', {id: sujet.id}) }}">{{ sujet.titre }}</a>
+                </div>
+                <div>
+                    {{ sujet.auteur.pseudo }} — {{ sujet.createdAt|date('d/m/Y H:i') }}
+                </div>
+            </div>
+        {% else %}
+            <div class="row">
+                <div>Aucune discussion.</div>
+                <div>—</div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if app.user %}
+        <div class="form-box" id="new-sujet">
+            <h3>Ajouter une discussion</h3>
+            {{ form_start(newSujetForm) }}
+                {{ form_row(newSujetForm.titre) }}
+                {{ form_row(newSujetForm.contenu) }}
+                <button class="btn primary" type="submit">Enregistrer</button>
+            {{ form_end(newSujetForm) }}
+        </div>
+    {% endif %}
+
+    {% if pages > 1 %}
+        <div class="pager">
+            {% for p in 1..pages %}
+                <a class="btn ghost" href="{{ path('app_theme', {id: theme.id, page: p}) }}">{{ p }}</a>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

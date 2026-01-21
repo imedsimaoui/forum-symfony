@@ -20,6 +20,11 @@ security:
             lazy: true
             provider: app_user_provider
             custom_authenticator: App\Security\AppAuthenticator
+            user_checker: App\Security\VerifiedUserChecker
+
+            login_throttling:
+                max_attempts: 3
+                interval: '5 seconds'
 
             remember_me:
                 secret: '%kernel.secret%'
@@ -34,11 +39,14 @@ security:
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
+            logout:
+                path: app_logout
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/moderator, roles: ROLE_MODERATOR }
+        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/sujet, roles: ROLE_USER, methods: [POST] }
 
 when@test:
     security:

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Message;
+use App\Entity\Sujet;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,6 +15,19 @@ class MessageRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Message::class);
+    }
+
+    /**
+     * @return Message[]
+     */
+    public function findBySujetOrdered(Sujet $sujet): array
+    {
+        return $this->createQueryBuilder('m')
+            ->andWhere('m.sujet = :sujet')
+            ->setParameter('sujet', $sujet)
+            ->orderBy('m.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

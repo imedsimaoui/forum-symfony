@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirmation{% endblock %}
+
+{% block body %}
+<style>
+    .wrap { max-width: 600px; margin: 0 auto; padding: 24px 20px 64px; }
+    .box { background: rgba(17, 24, 39, 0.9); border: 1px solid #1f2937; border-radius: 12px; padding: 16px; }
+</style>
+
+<div class="wrap">
+    <div class="box">
+        {% if status == 'ok' %}
+            <h1>Merci !</h1>
+            <p>Votre inscription est confirmée. Vous pouvez maintenant vous connecter.</p>
+            <a class="btn primary" href="{{ path('app_login') }}">Se connecter</a>
+        {% elseif status == 'expired' %}
+            <h1>Lien expiré</h1>
+            <p>Le lien de confirmation a expiré. Recommencez l’inscription.</p>
+            <a class="btn ghost" href="{{ path('app_register') }}">Revenir à l’inscription</a>
+        {% else %}
+            <h1>Lien invalide</h1>
+            <p>Le lien n’est pas valide.</p>
+            <a class="btn ghost" href="{{ path('app_register') }}">Revenir à l’inscription</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
